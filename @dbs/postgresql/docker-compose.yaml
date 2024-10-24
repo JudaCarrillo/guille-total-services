@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  main:
+    labels:
+      svc: 'live.postgres'
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: ITpg`01M[ls94l7xWD?n94hb0SL|r)
+      POSTGRES_DB: guille_total_db
+    networks:
+      - live_backend
+      - live_db
+
+
+networks:
+  live_backend:
+    name: 'live_backend'
+    driver: bridge
+  live_db:
+    name: 'live_db'
+    driver: bridge
