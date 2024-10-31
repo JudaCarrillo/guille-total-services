@@ -15,6 +15,7 @@ class User extends Authenticatable
         'paternal_surname',
         'maternal_surname',
         'data_of_birth',
+        'email',
         'password',
         'user_type',
         'verified_state',
@@ -37,5 +38,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    
+    public function token(){
+        return $this->hasOne(Token::class);
     }
 }
