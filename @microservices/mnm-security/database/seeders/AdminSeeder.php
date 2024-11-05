@@ -21,7 +21,7 @@ class AdminSeeder extends Seeder
             'data_of_birth'=>'2000-01-01',
             'email'=>'admin@gmail.com',
             'password'=>bcrypt('admin'),
-            'user_type'=>'A',
+            'user_type'=>2,
             'verified_state'=>'V',
             'verified_at'=>now(),
         ]);
