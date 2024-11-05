@@ -102,27 +102,4 @@ class AuthController extends Controller
             return response()->json(["error" => "Algo salió mal", "message" => $e->getMessage()], 500);
         }
     }
-    public function cambiarContrasena(Request $request)
-    {
-        try {
-            DB::beginTransaction();
-            $usuario_ingresado=User::where('id',auth()->user()->id)->first();
-            $request->validate([
-                'password' => 'required|string|min:4',
-                'new_password' => 'required|string|min:4',
-            ]);
-            $usuario = User::where('status', 'A')->where('email', $request->email)->first();
-            if (!$usuario) {
-                return response()->json(['resp' => 'Usuario no registrado'], 400);
-            }
-            if (!password_verify($request->password, $usuario->password)) {
-                return response()->json(['resp' => 'Contraseña incorrecta'], 400);
-            }
-            DB::commit();
-            return response()->json(['resp' => 'Contraseña cambiada correctamente'], 200);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => "Algo salió mal", "message" => $e->getMessage()], 500);
-        }
-    }
 }
