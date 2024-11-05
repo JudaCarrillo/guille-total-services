@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('refresh_token');
             $table->date('access_token_expires_at');
             $table->date('refresh_token_expires_at');
+            $table->char('status')->default('A');
             $table->timestamps();
         });
     }

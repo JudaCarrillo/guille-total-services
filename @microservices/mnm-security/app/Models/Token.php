@@ -13,6 +13,7 @@ class Token extends Model
         'refresh_token',
         'access_token_expires_at',
         'refresh_token_expires_at',
+        'status'
     ];
     protected $primaryKey='id';
     protected $hidden=[
