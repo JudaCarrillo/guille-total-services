@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  main:
+    image: rabbitmq:3
+    container_name: live.rabbitmq
+    labels:
+      svc: live.rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=ITpg`01M[ls94l7xWD?n94hb0SL|r)
+    command: >
+      sh -c "rabbitmq-plugins enable rabbitmq_management && rabbitmq-server"
+    networks:
+      - live_backend
+
+networks:
+  live_backend:
+    external: true
