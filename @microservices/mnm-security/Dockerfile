@@ -44,7 +44,8 @@ RUN composer install --no-ansi --no-dev --no-interaction --no-progress --optimiz
 COPY ./ /var/www/app/@microservices/${app}
 
 # Cambiar el propietario de los archivos a www-data
-RUN chown -R www-data:www-data /var/www/app/@microservices/${app}/storage /var/www/app/@microservices/${app}/bootstrap/cache
+# RUN chown -R www-data:www-data /var/www/app/@microservices/${app}/storage /var/www/app/@microservices/${app}/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/app/@microservices/${app}
 
 # Exponemos el puerto 80 a la network
 EXPOSE 80

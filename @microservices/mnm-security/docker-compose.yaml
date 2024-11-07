@@ -6,6 +6,7 @@ networks:
 
 services:
   main:
+    container_name: live.security
     labels:
       svc: "live.security"
     restart: always
@@ -23,6 +24,7 @@ services:
       - ./:/var/www/app/@microservices/mnm-security
 
   node:
+    container_name: live.security.node
     image: node:22-alpine
     working_dir: /var/www/app/@microservices/mnm-security
     volumes:
@@ -33,6 +35,7 @@ services:
       - main
 
   server:
+    container_name: live.security.server
     image: nginx:alpine
     restart: always
     ports:
