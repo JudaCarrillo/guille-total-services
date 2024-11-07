@@ -1,0 +1,33 @@
+# Ignorar archivos y carpetas de control de versiones
+.git
+.gitignore
+
+# Ignorar dependencias locales de Node.js
+node_modules
+npm-debug.log
+
+# Ignorar dependencias de Composer (si se regeneran dentro del contenedor)
+vendor
+
+# Ignorar archivos de configuración del entorno local
+.env
+.env.*
+
+# Ignorar archivos de caché
+*.log
+*.lock
+*.tmp
+
+# Ignorar IDEs y editores de texto
+.idea
+.vscode
+
+# Ignorar otros archivos temporales y de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar pruebas y datos de pruebas
+tests
+phpunit.xml
+phpunit.xml.dist
+coverage/

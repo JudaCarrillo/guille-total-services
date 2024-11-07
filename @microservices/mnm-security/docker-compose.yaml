@@ -1,0 +1,44 @@
+version: "3.8"
+
+networks:
+  live_backend:
+    external: true
+
+services:
+  main:
+    labels:
+      svc: "live.security"
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      args:
+        - app=mnm-security
+    ports:
+      - 9000:9000
+    env_file:
+      - ./.env
+    networks:
+      - live_backend
+    volumes:
+      - ./:/var/www/app/@microservices/mnm-security
+
+  node:
+    image: node:22-alpine
+    working_dir: /var/www/app/@microservices/mnm-security
+    volumes:
+      - ./:/var/www/app/@microservices/mnm-security
+      - /var/www/app/@microservices/mnm-security/node_modules
+    command: sh /var/www/app/@microservices/mnm-security/node_start.sh
+    depends_on:
+      - main
+
+  server:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - 81:80
+    networks:
+      - live_backend
+    volumes:
+      - ./:/var/www/app/@microservices/mnm-security
+      - ./nginx/config/:/etc/nginx/conf.d/
