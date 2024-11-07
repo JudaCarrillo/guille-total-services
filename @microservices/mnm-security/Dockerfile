@@ -2,12 +2,13 @@
 FROM php:8.2.17-fpm
 
 ARG app
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Creamos la carpeta /var/www/app/@microservices/${app}
 RUN mkdir -p /var/www/app/@microservices/${app}
 
-# Copiamos los archivos package.json composer.json y composer-lock.json a /var/www/
-COPY ./composer*.json /var/www/app/@microservices/${app}
+# Copiamos todos los archivos de la carpeta actual de nuestra
+COPY ./ /var/www/app/@microservices/${app}
 
 # Nos movemos a /var/www/
 WORKDIR /var/www/app/@microservices/${app}
@@ -37,14 +38,10 @@ RUN docker-php-ext-install gd
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Instalamos dependendencias de composer
-RUN composer install --no-ansi --no-dev --no-interaction --no-progress --optimize-autoloader --no-scripts
-
-# Copiamos todos los archivos de la carpeta actual de nuestra
-# computadora (los archivos de laravel) a /var/www/
-COPY ./ /var/www/app/@microservices/${app}
+RUN composer clear-cache
+RUN composer install --no-interaction --optimize-autoloader
 
 # Cambiar el propietario de los archivos a www-data
-# RUN chown -R www-data:www-data /var/www/app/@microservices/${app}/storage /var/www/app/@microservices/${app}/bootstrap/cache
 RUN chown -R www-data:www-data /var/www/app/@microservices/${app}
 
 # Exponemos el puerto 80 a la network
