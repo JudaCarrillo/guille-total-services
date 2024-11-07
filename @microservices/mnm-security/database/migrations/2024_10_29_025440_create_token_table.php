@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('token', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('access_token');
+            $table->text('access_token');
             $table->string('refresh_token');
             $table->date('access_token_expires_at');
             $table->date('refresh_token_expires_at');
