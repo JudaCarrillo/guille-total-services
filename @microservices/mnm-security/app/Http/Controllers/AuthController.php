@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth as FacadesJWTAuth;
 
 class AuthController extends Controller
 {
@@ -17,7 +19,7 @@ class AuthController extends Controller
     {
         try {
             DB::beginTransaction();
-            $request->validate([
+            $credentials = $request->validate([
                 'email' => 'required|email',
                 'password' => 'required'
             ]);
@@ -41,14 +43,21 @@ class AuthController extends Controller
                 ], 400);
             }
 
-            $acceso_token = hash('sha256', Str::random(60));
             $refresh_token = hash('sha256', Str::random(60));
             $expiracion_acceso = Carbon::now()->addMinutes(30);
             $expiracion_refresh = Carbon::now()->addDays(30);
 
+            // Cambiando la duración del token (si es necesario)
+            $this->cambiarDuracionToken();
+
+            // Intentando generar un token JWT
+            if (!$token = FacadesJWTAuth::attempt($credentials)) {
+                return response()->json(['error' => 'Credenciales inválidas'], 403);
+            }
+
             Token::create([
                 'user_id' => $usuario->user_id,
-                'access_token' => $acceso_token,
+                'access_token' => $token,
                 'refresh_token' => $refresh_token,
                 'access_token_expires_at' => $expiracion_acceso,
                 'refresh_token_expires_at' => $expiracion_refresh,
@@ -70,11 +79,12 @@ class AuthController extends Controller
                     ]
                 ],
                 'token' => [
-                    'accessToken' => $acceso_token,
+                    'accessToken' => $token,
                     'refreshToken' => $refresh_token,
                     'accessTokenExpiresAt' => $expiracion_acceso,
                     'refreshTokenExpiresAt' => $expiracion_refresh,
                 ]
+
             ], 200);
         } catch (TooManyRequestsHttpException $e) {
             DB::rollBack();
@@ -95,7 +105,6 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
 
     public function register(Request $request)
     {
@@ -182,6 +191,44 @@ class AuthController extends Controller
                 'data' => ['item' => null],
                 'token' => null,
                 'message' => 'Sesión cerrada'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'data' => ['item' => null],
+                'token' => null,
+                'error' => 'Algo salió mal',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    private function cambiarDuracionToken()
+    {
+        $myTTL = 60 * 24 * 1;
+        FacadesJWTAuth::factory()->setTTL($myTTL);
+    }
+    public function getUserById()
+    {
+        try {
+            $user = User::where('id', auth()->user()->id)->first();
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'item' => [
+                        'userId' => $user->user_id,
+                        'name' => $user->name,
+                        'paternalSurname' => $user->paternal_surname,
+                        'maternalSurname' => $user->maternal_surname,
+                        'dataOfBirth' => $user->data_of_birth,
+                        'email' => $user->email,
+                        'userType' => $user->user_type,
+                        'verifiedState' => $user->verified_state,
+                        'verifiedAt' => $user->verified_at,
+                    ]
+                ],
+                'token' => null,
+                'message' => 'Usuario encontrado'
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
