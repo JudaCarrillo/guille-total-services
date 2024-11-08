@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  # main.gateway:
+  #   extends:
+  #     file: ./main/docker-compose.yml
+  #     service: main
+  #   volumes:
+  #     - files-datavolume:/mnt
+  #   env_file:
+  #     - ./.env
+  #   networks:
+  #     - live_backend
+
+  app.gateway:
+    extends:
+      file: ./app/docker-compose.yaml
+      service: main
+    volumes:
+      - files-data:/mnt
+    # env_file:
+    #   - ./.env
+    networks:
+      - live_backend
+

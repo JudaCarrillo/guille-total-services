@@ -8,7 +8,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN mkdir -p /var/www/app/@microservices/${app}
 
 # Copiamos todos los archivos de la carpeta actual de nuestra
-COPY ./ /var/www/app/@microservices/${app}
+COPY ./@microservices/${app} /var/www/app/@microservices/${app}
 
 # Nos movemos a /var/www/
 WORKDIR /var/www/app/@microservices/${app}
@@ -45,7 +45,7 @@ RUN composer install --no-interaction --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/app/@microservices/${app}
 
 # Exponemos el puerto 80 a la network
-EXPOSE 80
+EXPOSE 3000
 
 # Corremos el comando php-fpm para ejecutar PHP
-CMD ["php-fpm"]
+CMD ["php", "-S", "0.0.0.0:3000", "-t", "public"]

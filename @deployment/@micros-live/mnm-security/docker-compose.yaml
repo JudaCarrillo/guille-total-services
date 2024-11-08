@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  main:
+    labels:
+      svc: "mnm-security"
+    restart: always
+    build:
+      dockerfile: ./@deployment/Dockerfile
+      args:
+        - app=mnm-security
+    ports:
+      - 3000:3000
+    env_file:
+      - ./.env
+    volumes:
+      - files-data:/var/www/app/@microservices/mnm-security
