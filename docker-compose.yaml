@@ -29,6 +29,16 @@ services:
       - live_backend
     container_name: live.mnm.security
 
+  live.mnm.subscription:
+    extends: 
+      file: ./@deployment/@micros-live/mnm-subscription/docker-compose.yaml
+      service: main
+    volumes:
+      - files-data:/app/@microservices/mnm-subscription/files
+    networks: 
+      - live_backend
+    container_name: live.mnm.subscription
+
   app.gateway:
     extends:
       file: ./@gateways/docker-compose.yaml

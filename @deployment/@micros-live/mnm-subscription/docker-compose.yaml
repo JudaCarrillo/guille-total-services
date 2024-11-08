@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  main:
+    labels:
+      svc: "mnm-suscription"
+    restart: always
+    build:
+      dockerfile: ./@deployment/Dockerfile
+      args:
+        - app=mnm-suscription
+        - port=3001
+    ports:
+      - 3001:3001
+    env_file:
+      - ./.env
+    volumes:
+      - files-data:/var/www/app/@microservices/mnm-suscription
+    command: php -S 0.0.0.0:3001 -t public
