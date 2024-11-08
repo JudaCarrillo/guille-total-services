@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  main:
+    labels:
+      svc: "main.gateway"
+    container_name: main.gateway
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+      - 443:443
