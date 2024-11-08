@@ -76,7 +76,7 @@ class SuscripcionController extends Controller
                     "total_cycles" => 1,
                     "pricing_scheme" => [
                         "fixed_price" => [
-                            "value" => "1",
+                            "value" => "3",
                             "currency_code" => "USD"
                         ]
                     ]
