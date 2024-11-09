@@ -1,0 +1,48 @@
+version: "3.8"
+
+networks:
+  live_backend:
+    name: live_backend
+    driver: bridge
+
+volumes:
+  postgres_data:
+  files-data:
+
+services:
+
+  live.postgres:
+    extends:
+      file: ./@dbs/postgresql/docker-compose.yaml
+      service: main
+    networks:
+      - live_backend
+    container_name: live.postgres
+
+  live.mnm.security:
+    extends: 
+      file: ./@deployment/@micros-live/mnm-security/docker-compose.yaml
+      service: main
+    volumes:
+      - files-data:/app/@microservices/mnm-security/files
+    networks: 
+      - live_backend
+    container_name: live.mnm.security
+
+  live.mnm.subscription:
+    extends: 
+      file: ./@deployment/@micros-live/mnm-subscription/docker-compose.yaml
+      service: main
+    volumes:
+      - files-data:/app/@microservices/mnm-subscription/files
+    networks: 
+      - live_backend
+    container_name: live.mnm.subscription
+
+  app.gateway:
+    extends:
+      file: ./@gateways/docker-compose.yaml
+      service: app.gateway
+    container_name: app.gateway
+    networks:
+      - live_backend

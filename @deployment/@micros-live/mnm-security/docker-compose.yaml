@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  main:
+    labels:
+      svc: "mnm-security"
+    restart: always
+    build:
+      dockerfile: ./@deployment/Dockerfile
+      args:
+        - app=mnm-security
+        - port=3000
+    ports:
+      - 3000:3000
+    env_file:
+      - ./.env
+    volumes:
+      - files-data:/var/www/app/@microservices/mnm-security
+    command: php -S 0.0.0.0:3000 -t public

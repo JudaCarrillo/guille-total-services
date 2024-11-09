@@ -135,7 +135,7 @@ class AuthController extends Controller
                 'data_of_birth' => $request->data_of_birth,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
-                'user_type' => 2,
+                'user_type' => 1,
                 'verified_state' => 'V',
                 'verified_at' => now(),
             ]);
@@ -228,6 +228,39 @@ class AuthController extends Controller
                     ]
                 ],
                 'token' => null,
+                'message' => 'Usuario encontrado'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'data' => ['item' => null],
+                'token' => null,
+                'error' => 'Algo salió mal',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function CambiarTipoUser(){
+        try {
+            $user = User::where('id', auth()->user()->id)->first();
+            $user->user_type = 2;
+            $user->save();
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'item' => [
+                        'userId' => $user->user_id,
+                        'name' => $user->name,
+                        'paternalSurname' => $user->paternal_surname,
+                        'maternalSurname' => $user->maternal_surname,
+                        'dataOfBirth' => $user->data_of_birth,
+                        'email' => $user->email,
+                        'userType' => $user->user_type,
+                        'verifiedState' => $user->verified_state,
+                        'verifiedAt' => $user->verified_at,
+                    ]
+                ],
                 'message' => 'Usuario encontrado'
             ], 200);
         } catch (\Exception $e) {

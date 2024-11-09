@@ -2,13 +2,16 @@
 FROM php:8.2.17-fpm
 
 ARG app
+ARG port
+
+ENV PORT=${port}
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Creamos la carpeta /var/www/app/@microservices/${app}
 RUN mkdir -p /var/www/app/@microservices/${app}
 
 # Copiamos todos los archivos de la carpeta actual de nuestra
-COPY ./ /var/www/app/@microservices/${app}
+COPY ./@microservices/${app} /var/www/app/@microservices/${app}
 
 # Nos movemos a /var/www/
 WORKDIR /var/www/app/@microservices/${app}
@@ -44,8 +47,5 @@ RUN composer install --no-interaction --optimize-autoloader
 # Cambiar el propietario de los archivos a www-data
 RUN chown -R www-data:www-data /var/www/app/@microservices/${app}
 
-# Exponemos el puerto 80 a la network
-EXPOSE 80
-
-# Corremos el comando php-fpm para ejecutar PHP
-CMD ["php-fpm"]
+# Exponemos el puerto a la network
+EXPOSE ${PORT}
